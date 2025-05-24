@@ -13,9 +13,6 @@ RUN npm install
 # Copy the rest of the app
 COPY . .
 
-# Copy todos.json file
-COPY todos.json ./
-
 # Build the Next.js app
 RUN npm run build
 
