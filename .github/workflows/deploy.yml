@@ -24,5 +24,5 @@ jobs:
           server: ${{ secrets.FTP_SERVER }}
           username: ${{ secrets.FTP_USER_NAME }}
           password: ${{ secrets.FTP_PASSWORD }}
-          local-dir: .next  # Adjust this based on where your static files are
+          local-dir: .next/  # Adjust this based on where your static files are
           server-dir: /  # Change this to match your FTP root
