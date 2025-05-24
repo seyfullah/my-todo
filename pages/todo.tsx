@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import Head from 'next/head';
 
 interface Todo {
@@ -18,9 +18,9 @@ export default function TodoPage() {
       .then(data => setTodos(data));
   }, []);
 
-  const addTodo = () => {
+  const addTodo = useCallback((e?: React.FormEvent) => {
+    if (e) e.preventDefault();
     if (input.trim() !== '') {
-      // Simulate API POST (does not persist on JSONPlaceholder)
       fetch('https://jsonplaceholder.typicode.com/todos', {
         method: 'POST',
         body: JSON.stringify({
@@ -34,25 +34,26 @@ export default function TodoPage() {
       })
         .then(res => res.json())
         .then(newTodo => {
+          // JSONPlaceholder always returns id: 201, so use Date.now() for uniqueness
           setTodos([...todos, { ...newTodo, id: Date.now() }]);
           setInput('');
         });
     }
-  };
+  }, [input, todos]);
 
-  const removeTodo = (id: number) => {
-    // Simulate API DELETE (does not persist on JSONPlaceholder)
+  const removeTodo = useCallback((id: number) => {
     fetch(`https://jsonplaceholder.typicode.com/todos/${id}`, {
       method: 'DELETE',
     }).then(() => {
       setTodos(todos.filter(todo => todo.id !== id));
     });
-  };
+  }, [todos]);
 
   return (
     <>
       <Head>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>Todo List</title>
       </Head>
       <div
         style={{
@@ -64,7 +65,10 @@ export default function TodoPage() {
         }}
       >
         <h1 style={{ fontSize: '2rem', textAlign: 'center' }}>Todo List</h1>
-        <div style={{ display: 'flex', gap: 8, flexDirection: 'row', marginBottom: 16 }}>
+        <form
+          onSubmit={addTodo}
+          style={{ display: 'flex', gap: 8, flexDirection: 'row', marginBottom: 16 }}
+        >
           <input
             value={input}
             onChange={e => setInput(e.target.value)}
@@ -78,7 +82,7 @@ export default function TodoPage() {
             }}
           />
           <button
-            onClick={addTodo}
+            type="submit"
             style={{
               padding: '8px 16px',
               fontSize: '1rem',
@@ -91,7 +95,7 @@ export default function TodoPage() {
           >
             Add
           </button>
-        </div>
+        </form>
         <ul style={{ padding: 0, listStyle: 'none' }}>
           {todos.map((todo) => (
             <li
