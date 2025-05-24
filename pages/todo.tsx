@@ -1,48 +1,52 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import Head from 'next/head';
 
+interface Todo {
+  id: number;
+  title: string;
+  completed: boolean;
+}
+
 export default function TodoPage() {
-  const [todos, setTodos] = useState<string[]>([]);
+  const [todos, setTodos] = useState<Todo[]>([]);
   const [input, setInput] = useState('');
-  const saveTimeout = useRef<NodeJS.Timeout | null>(null);
 
-  // Load todos from API on mount
+  // Fetch todos from JSONPlaceholder API on mount
   useEffect(() => {
-    const fetchTodos = async () => {
-      const res = await fetch('/api/load-todos');
-      if (res.ok) {
-        const data = await res.json();
-        setTodos(data.todos || []);
-      }
-    };
-    fetchTodos();
+    fetch('https://jsonplaceholder.typicode.com/todos?_limit=10')
+      .then(res => res.json())
+      .then(data => setTodos(data));
   }, []);
-
-  // Debounced save
-  const saveTodos = (newTodos: string[]) => {
-    if (saveTimeout.current) clearTimeout(saveTimeout.current);
-    saveTimeout.current = setTimeout(async () => {
-      await fetch('/api/save-todos', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ todos: newTodos }),
-      });
-    }, 500); // Save after 500ms of inactivity
-  };
 
   const addTodo = () => {
     if (input.trim() !== '') {
-      const updated = [...todos, input];
-      setTodos(updated);
-      saveTodos(updated);
-      setInput('');
+      // Simulate API POST (does not persist on JSONPlaceholder)
+      fetch('https://jsonplaceholder.typicode.com/todos', {
+        method: 'POST',
+        body: JSON.stringify({
+          title: input,
+          completed: false,
+          userId: 1,
+        }),
+        headers: {
+          'Content-type': 'application/json; charset=UTF-8',
+        },
+      })
+        .then(res => res.json())
+        .then(newTodo => {
+          setTodos([...todos, { ...newTodo, id: Date.now() }]);
+          setInput('');
+        });
     }
   };
 
-  const removeTodo = (index: number) => {
-    const updated = todos.filter((_, i) => i !== index);
-    setTodos(updated);
-    saveTodos(updated);
+  const removeTodo = (id: number) => {
+    // Simulate API DELETE (does not persist on JSONPlaceholder)
+    fetch(`https://jsonplaceholder.typicode.com/todos/${id}`, {
+      method: 'DELETE',
+    }).then(() => {
+      setTodos(todos.filter(todo => todo.id !== id));
+    });
   };
 
   return (
@@ -89,9 +93,9 @@ export default function TodoPage() {
           </button>
         </div>
         <ul style={{ padding: 0, listStyle: 'none' }}>
-          {todos.map((todo, idx) => (
+          {todos.map((todo) => (
             <li
-              key={idx}
+              key={todo.id}
               style={{
                 margin: '8px 0',
                 display: 'flex',
@@ -100,11 +104,13 @@ export default function TodoPage() {
                 background: '#f9f9f9',
                 padding: '8px 12px',
                 borderRadius: 4,
+                opacity: todo.completed ? 0.5 : 1,
+                textDecoration: todo.completed ? 'line-through' : 'none',
               }}
             >
-              <span style={{ wordBreak: 'break-word', flex: 1 }}>{todo}</span>
+              <span style={{ wordBreak: 'break-word', flex: 1 }}>{todo.title}</span>
               <button
-                onClick={() => removeTodo(idx)}
+                onClick={() => removeTodo(todo.id)}
                 style={{
                   marginLeft: 8,
                   padding: '4px 8px',
