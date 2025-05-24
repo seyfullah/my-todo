@@ -10,7 +10,6 @@ npm-debug.log
 
 # production
 /build
-out/
 
 # misc
 .DS_Store
