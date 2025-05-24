@@ -18,11 +18,14 @@ jobs:
       - name: Build Next.js app
         run: npm run build
 
+      - name: Export static site
+        run: npm run export
+
       - name: Deploy via FTP
         uses: SamKirkland/FTP-Deploy-Action@4.3.0
         with:
           server: ${{ secrets.FTP_SERVER }}
           username: ${{ secrets.FTP_USER_NAME }}
           password: ${{ secrets.FTP_PASSWORD }}
-          local-dir: public/  # Adjust this based on where your static files are
+          local-dir: out/
           server-dir: /  # Change this to match your FTP root
