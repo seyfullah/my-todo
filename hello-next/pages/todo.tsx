@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import Head from 'next/head';
 
 export default function TodoPage() {
   const [todos, setTodos] = useState<string[]>([]);
@@ -46,9 +47,9 @@ export default function TodoPage() {
 
   return (
     <>
-      <head>
+      <Head>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-      </head>
+      </Head>
       <div
         style={{
           maxWidth: 400,

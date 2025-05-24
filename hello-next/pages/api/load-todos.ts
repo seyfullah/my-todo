@@ -9,7 +9,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
       ? JSON.parse(fs.readFileSync(filePath, 'utf-8'))
       : [];
     res.status(200).json({ todos: data });
-  } catch (e) {
+  } catch {
     res.status(500).json({ todos: [] });
   }
 }
