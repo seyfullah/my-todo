@@ -10,7 +10,7 @@ jobs:
 
       - name: 🔨 Build Project
         run: |
-          cd hello-next
+          cd next-js
           npm install
           npm run build
 
