@@ -12,8 +12,7 @@ interface Todo {
 export default function TodoPage() {
   const [todos, setTodos] = useState<Todo[]>([]);
   const [input, setInput] = useState('');
-  const [error, setError] = useState(false);
-
+  
   // Fetch todos from selected API on mount
   useEffect(() => {
     fetch(API_BASE)
