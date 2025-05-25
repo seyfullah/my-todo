@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import Head from 'next/head';
 
+const API_BASE = 'https://potential-garbanzo-pgpx9v55rrc644v-5226.app.github.dev/api/todo';
+
 interface Todo {
   id: number;
   title: string;
@@ -12,9 +14,9 @@ export default function TodoPage() {
   const [input, setInput] = useState('');
   const [error, setError] = useState(false);
 
-  // Fetch todos from JSONPlaceholder API on mount
+  // Fetch todos from selected API on mount
   useEffect(() => {
-    fetch('https://jsonplaceholder.typicode.com/todos?_limit=10')
+    fetch(API_BASE)
       .then(res => res.json())
       .then(data => setTodos(data));
   }, []);
@@ -22,20 +24,13 @@ export default function TodoPage() {
   const addTodo = useCallback((e?: React.FormEvent) => {
     if (e) e.preventDefault();
     if (input.trim() !== '') {
-      fetch('https://jsonplaceholder.typicode.com/todos', {
+      fetch(API_BASE, {
         method: 'POST',
-        body: JSON.stringify({
-          title: input,
-          completed: false,
-          userId: 1,
-        }),
-        headers: {
-          'Content-type': 'application/json; charset=UTF-8',
-        },
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ title: input, completed: false }),
       })
         .then(res => res.json())
         .then(newTodo => {
-          // JSONPlaceholder always returns id: 201, so use Date.now() for uniqueness
           setTodos([...todos, { ...newTodo, id: Date.now() }]);
           setInput('');
         });
@@ -43,30 +38,30 @@ export default function TodoPage() {
   }, [input, todos]);
 
   const removeTodo = useCallback((id: number) => {
-    fetch(`https://jsonplaceholder.typicode.com/todos/${id}`, {
+    fetch(`${API_BASE}/${id}`, {
       method: 'DELETE',
     }).then(() => {
       setTodos(todos.filter(todo => todo.id !== id));
     });
   }, [todos]);
 
-  useEffect(() => {
-    // Example: Simulate a fetch to check if the page should 404
-    fetch('https://jsonplaceholder.typicode.com/todos?_limit=1')
-      .then(res => {
-        if (!res.ok) throw new Error("Not found");
-        return res.json();
-      })
-      .catch(() => setError(true));
-  }, []);
+  // Optional: Remove or adjust this block if you don't want to redirect on error
+  // useEffect(() => {
+  //   fetch(`${API_BASE}?_limit=1`)
+  //     .then(res => {
+  //       if (!res.ok) throw new Error("Not found");
+  //       return res.json();
+  //     })
+  //     .catch(() => setError(true));
+  // }, []);
 
-  useEffect(() => {
-    if (error) {
-      window.location.href = "/todo.html";
-    }
-  }, [error]);
+  // useEffect(() => {
+  //   if (error) {
+  //     window.location.href = "/todo.html";
+  //   }
+  // }, [error]);
 
-  if (error) return null; // Or a loading spinner
+  // if (error) return null;
 
   return (
     <>
@@ -154,3 +149,4 @@ export default function TodoPage() {
     </>
   );
 }
+
