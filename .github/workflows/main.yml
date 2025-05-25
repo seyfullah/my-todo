@@ -10,12 +10,15 @@ jobs:
 
     - name: Ensure out directory exists
       run: mkdir -p out
-              
+
     - name: 🔨 Build Project
       run: |
         npm install
         npm run build
     
+    - name: Debug Build Directory
+      run: ls -la out/
+
     - name: 📂 Sync files
       uses: SamKirkland/FTP-Deploy-Action@v4.3.5
       with:
@@ -23,4 +26,4 @@ jobs:
         username: ${{ secrets.FTP_USER_NAME }}
         password: ${{ secrets.FTP_PASSWORD }}
         local-dir: out/
-        server-dir: /
+        server-dir: /path/to/your/directory
