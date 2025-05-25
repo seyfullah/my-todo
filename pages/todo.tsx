@@ -10,6 +10,7 @@ interface Todo {
 export default function TodoPage() {
   const [todos, setTodos] = useState<Todo[]>([]);
   const [input, setInput] = useState('');
+  const [error, setError] = useState(false);
 
   // Fetch todos from JSONPlaceholder API on mount
   useEffect(() => {
@@ -48,6 +49,24 @@ export default function TodoPage() {
       setTodos(todos.filter(todo => todo.id !== id));
     });
   }, [todos]);
+
+  useEffect(() => {
+    // Example: Simulate a fetch to check if the page should 404
+    fetch('https://jsonplaceholder.typicode.com/todos?_limit=1')
+      .then(res => {
+        if (!res.ok) throw new Error("Not found");
+        return res.json();
+      })
+      .catch(() => setError(true));
+  }, []);
+
+  useEffect(() => {
+    if (error) {
+      window.location.href = "/todo.html";
+    }
+  }, [error]);
+
+  if (error) return null; // Or a loading spinner
 
   return (
     <>

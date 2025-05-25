@@ -19,6 +19,15 @@ jobs:
     - name: Debug Build Directory
       run: ls -la out/
 
+    # - name: 📂 Sync files
+    #   uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+    #   with:
+    #     server: ${{ secrets.FTP_SERVER }}
+    #     username: ${{ secrets.FTP_USER_NAME }}
+    #     password: ${{ secrets.FTP_PASSWORD }}
+    #     local-dir: out/
+    #     server-dir: /
+
     - name: Upload ftp
       uses: sebastianpopp/ftp-action@releases/v2
       with:
