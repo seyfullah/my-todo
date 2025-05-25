@@ -1,5 +1,3 @@
-import Link from "next/link";
-
 export default function Home() {
   return (
     <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
