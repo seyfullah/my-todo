@@ -1,0 +1,17 @@
+### Get all todos
+GET https:/potential-garbanzo-pgpx9v55rrc644v-5226.app.github.dev/api/todo
+
+### Get todo by id
+GET https:/potential-garbanzo-pgpx9v55rrc644v-5226.app.github.dev/api/todo/1
+
+### Add a new todo
+POST https:/potential-garbanzo-pgpx9v55rrc644v-5226.app.github.dev/api/todo
+Content-Type: application/json
+
+{
+  "title": "New item from .http",
+  "completed": false
+}
+
+### Delete a todo
+DELETE https:/potential-garbanzo-pgpx9v55rrc644v-5226.app.github.dev/api/todo/1
