@@ -20,6 +20,6 @@ jobs:
           host: ${{ secrets.FTP_SERVER }}
           user: ${{ secrets.FTP_USER_NAME }}
           password: ${{ secrets.FTP_PASSWORD }}
-          localDir: "hello-next/out/"
+          localDir: "out/"
           remoteDir: "/"
           options: "--delete --asci"
