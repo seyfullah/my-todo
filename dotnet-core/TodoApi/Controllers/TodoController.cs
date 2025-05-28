@@ -15,28 +15,29 @@ namespace TodoApi.Controllers
         }
 
         [HttpGet]
-        public IActionResult Get()
+        public async Task<ActionResult<IEnumerable<TodoItem>>> Get()
         {
             using var conn = DbHelper.GetConnection();
-            var todos = conn.Query<TodoItem>("SELECT * FROM Todos").ToList();
+            var todos = await conn.QueryAsync<TodoItem>("SELECT Id, Title, Completed FROM Todos");
             return Ok(todos);
         }
 
         [HttpGet("{id}")]
-        public IActionResult GetById(long id)
+        public async Task<ActionResult<TodoItem>> GetById(long id)
         {
             using var conn = DbHelper.GetConnection();
-            var todo = conn.QueryFirstOrDefault<TodoItem>("SELECT * FROM Todos WHERE Id = @Id", new { Id = id });
+            var todo = await conn.QueryFirstOrDefaultAsync<TodoItem>(
+                "SELECT Id, Title, Completed FROM Todos WHERE Id = @Id", new { Id = id });
             if (todo == null) return NotFound();
             return Ok(todo);
         }
 
         [HttpPost]
-        public IActionResult Post([FromBody] TodoItem item)
+        public async Task<ActionResult<TodoItem>> Post([FromBody] TodoItem item)
         {
             using var conn = DbHelper.GetConnection();
             var sql = "INSERT INTO Todos (Title, Completed) VALUES (@Title, @Completed); SELECT last_insert_rowid();";
-            var id = conn.ExecuteScalar<long>(sql, item);
+            var id = await conn.ExecuteScalarAsync<long>(sql, item);
             item.Id = id;
             return CreatedAtAction(nameof(GetById), new { id = item.Id }, item);
         }
