@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import Head from 'next/head';
 
-const API_BASE = 'https://potential-garbanzo-pgpx9v55rrc644v-5226.app.github.dev/api/todo';
+// const API_BASE = 'https://potential-garbanzo-pgpx9v55rrc644v-5226.app.github.dev/api/todo';
+const API_BASE = 'https://jsonplaceholder.typicode.com/todos';
 
 interface Todo {
   id: number;
